@@ -60,9 +60,16 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    msgDiv.textContent = '✅ ' + data.message;
+                    // UX IMPROVEMENT: Feedback + Redirect
+                    msgDiv.textContent = '✅ ' + data.message + ' - Redirecting...';
                     msgDiv.className = 'success';
                     document.getElementById('registerForm').reset();
+                    
+                    // Redirect to catalog after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'catalog.html';
+                    }, 1500);
+
                 } else {
                     msgDiv.textContent = '❌ ' + data.error;
                     msgDiv.className = 'error';
