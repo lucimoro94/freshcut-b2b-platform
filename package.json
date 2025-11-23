@@ -1,0 +1,38 @@
+{
+  "name": "freshcut-b2b-platform",
+  "version": "1.0.0",
+  "description": "This repository contains the deliverables for **Assessment Part 1 – Requirements Analysis and Specification** of the course *Introduction to Software Engineering*.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucimoro94/freshcut-b2b-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucimoro94/freshcut-b2b-platform/issues"
+  },
+  "homepage": "https://github.com/lucimoro94/freshcut-b2b-platform#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
+  }
+}
