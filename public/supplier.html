@@ -10,7 +10,9 @@
         .section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button { padding: 10px; background: #27ae60; color: white; border: none; cursor: pointer; }
+        button { padding: 10px; background: #27ae60; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        .btn-delete { background: #e74c3c; padding: 6px 12px; font-size: 0.9em; }
+        .btn-delete:hover { background: #c0392b; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
@@ -25,7 +27,7 @@
             <button onclick="logout()" style="background:#e74c3c;">Logout</button>
         </header>
 
-        <!-- Product Management Section -->
+        <!-- SECTION 1: ADD PRODUCT -->
         <div class="section">
             <h2>Add New Product</h2>
             <form id="addProductForm">
@@ -36,7 +38,23 @@
             </form>
         </div>
 
-        <!-- Order Management Section -->
+        <!-- SECTION 2: MANAGE CATALOG (NEW) -->
+        <div class="section">
+            <h2>Manage Catalog</h2>
+            <table id="productsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody><!-- Products injected here --></tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 3: MANAGE ORDERS -->
         <div class="section">
             <h2>Incoming Orders</h2>
             <table id="ordersTable">
@@ -50,7 +68,7 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody><!-- Dynamic Content --></tbody>
+                <tbody><!-- Orders injected here --></tbody>
             </table>
         </div>
     </div>
@@ -77,12 +95,49 @@
                 });
                 alert('Product Added Successfully!');
                 document.getElementById('addProductForm').reset();
+                loadProducts(); // Refresh the list
             } catch (err) {
                 console.error('Error adding product:', err);
             }
         });
 
-        // 3. Load Orders
+        // 3. Load Products (For Deletion)
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                const tbody = document.querySelector('#productsTable tbody');
+                
+                tbody.innerHTML = products.map(p => `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td>${p.name}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td><button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading products:', err);
+            }
+        }
+
+        // 4. Delete Product Logic
+        async function deleteProduct(id) {
+            if(!confirm('Are you sure you want to remove this product from the catalog?')) return;
+            
+            try {
+                const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadProducts(); // Refresh list
+                } else {
+                    alert('Failed to delete product.');
+                }
+            } catch (err) {
+                console.error('Error deleting product:', err);
+            }
+        }
+
+        // 5. Load Orders Logic
         async function loadOrders() {
             try {
                 const res = await fetch(`/api/orders?role=supplier&userId=${user.id}`);
@@ -110,7 +165,7 @@
             }
         }
 
-        // 4. Update Order Status
+        // 6. Update Status Logic
         async function updateStatus(id) {
             const newStatus = document.getElementById(`status-${id}`).value;
             try {
@@ -130,7 +185,8 @@
             window.location.href = 'login.html'; 
         }
         
-        // Init
+        // Initialization
+        loadProducts();
         loadOrders();
     </script>
 </body>

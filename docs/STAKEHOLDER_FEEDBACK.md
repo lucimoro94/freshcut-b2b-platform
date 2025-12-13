@@ -36,6 +36,19 @@ This document tracks feedback received from stakeholders (Farmers, Florists, and
 
 ---
 
+## Phase 3: Enhancements & Maintenance
+**Tester:** Giovanni (Farmer/Supplier)
+- **Feedback:** "I made a mistake adding a product price, but I cannot remove it from the catalog."
+- **Action Taken:** Added a "Manage Catalog" section in the Supplier Dashboard with a **Delete** button.
+- **Status:** ✅ Implemented.
+
+**Tester:** Maria (Florist Representative)
+- **Feedback:** "The catalog is growing. It's hard to find specific flowers without scrolling."
+- **Action Taken:** Implemented a **Search Bar** in the catalog to filter products by name.
+- **Status:** ✅ Implemented.
+
+---
+
 ## Final Sign-Off
 **Date:** 2025-11-23
 **Conclusion:** All critical feedback has been addressed. The platform supports the full B2B lifecycle (Order -> Process -> Track).

@@ -10,7 +10,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 const users = [];
 const products = [
     { id: 1, name: 'Red Roses (Batch of 50)', price: 45.00, category: 'Flowers', image: 'https://placehold.co/200x150?text=Roses' },
-    { id: 2, name: 'Tulips Mixed Colors', price: 30.00, category: 'Flowers', image: 'https://placehold.co/200x150?text=Tulips' }
+    { id: 2, name: 'Tulips Mixed Colors', price: 30.00, category: 'Flowers', image: 'https://placehold.co/200x150?text=Tulips' },
+    { id: 3, name: 'Sunflower Seeds (Bulk)', price: 12.50, category: 'Seeds', image: 'https://placehold.co/200x150?text=Seeds' }
 ];
 const orders = [];
 
@@ -25,17 +26,14 @@ app.get('/api/health', (req, res) => res.status(200).json({ status: 'active' }))
 app.post('/api/register', (req, res) => {
     const { username, password, role } = req.body;
     
-    // Input validation
     if (!username || !password) {
         return res.status(400).json({ error: 'Missing credentials' });
     }
     
-    // Check for existing user
     if (users.find(u => u.username === username)) {
         return res.status(409).json({ error: 'User already exists' });
     }
     
-    // Create new user entity
     const newUser = { 
         id: users.length + 1, 
         username, 
@@ -50,8 +48,6 @@ app.post('/api/register', (req, res) => {
 // User Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
-    
-    // Verify credentials
     const user = users.find(u => u.username === username && u.password === password);
     
     if (!user) {
@@ -63,8 +59,20 @@ app.post('/api/login', (req, res) => {
 
 // --- PRODUCT MANAGEMENT ---
 
-// Retrieve Product Catalog
-app.get('/api/products', (req, res) => res.status(200).json(products));
+// Retrieve Product Catalog (Supports Search)
+app.get('/api/products', (req, res) => {
+    const { search } = req.query;
+    
+    if (search) {
+        // Filter products by name (case-insensitive)
+        const filtered = products.filter(p => 
+            p.name.toLowerCase().includes(search.toLowerCase())
+        );
+        return res.status(200).json(filtered);
+    }
+    
+    res.status(200).json(products);
+});
 
 // Add New Product (Supplier Only)
 app.post('/api/products', (req, res) => {
@@ -86,6 +94,20 @@ app.post('/api/products', (req, res) => {
     res.status(201).json({ message: 'Product added successfully', product: newProduct });
 });
 
+// Delete Product (Supplier Only)
+app.delete('/api/products/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = products.findIndex(p => p.id === id);
+    
+    if (index === -1) {
+        return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    // Remove product from the array
+    products.splice(index, 1);
+    res.status(200).json({ message: 'Product deleted successfully' });
+});
+
 // --- ORDER MANAGEMENT ---
 
 // Create New Order
@@ -103,28 +125,26 @@ app.post('/api/orders', (req, res) => {
         userId, 
         username,
         date: new Date(),
-        status: 'New' // Lifecycle: New -> Processing -> Completed
+        status: 'New'
     };
     
     orders.push(newOrder);
     res.status(201).json({ message: 'Order placed successfully', orderId: newOrder.id });
 });
 
-// Retrieve Orders (Role-Based Access Control)
+// Retrieve Orders (RBAC)
 app.get('/api/orders', (req, res) => {
     const { userId, role } = req.query;
     
     if (role === 'supplier') {
-        // Suppliers view all incoming orders
         return res.status(200).json(orders);
     } else {
-        // Buyers view only their own order history
         const myOrders = orders.filter(o => o.userId == userId);
         return res.status(200).json(myOrders);
     }
 });
 
-// Update Order Status (Supplier Only)
+// Update Order Status
 app.put('/api/orders/:id', (req, res) => {
     const { status } = req.body;
     const order = orders.find(o => o.id == req.params.id);
