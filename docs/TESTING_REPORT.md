@@ -43,6 +43,8 @@ Result:      SUCCESS
 | **UAT-04** | **Order** | Place Order | 1. Add items to cart<br>2. Checkout | Success message & Cart clear | Order placed successfully | ✅ PASS |
 | **UAT-05** | **Fulfillment** | Update Status | 1. Supplier views order<br>2. Change to "Completed" | Status updates in DB | Status updated | ✅ PASS |
 | **UAT-06** | **History** | Track Order | 1. Buyer views "My Orders" | See "Completed" status | Status matches Supplier's update | ✅ PASS |
+| **UAT-07** | **Maintenance** | Delete Product | 1. Supplier clicks Delete | Product removed from list | Product disappears | ✅ PASS |
+| **UAT-08** | **Enhancement** | Search Product | 1. Buyer types "Rose"<br>2. Clicks Search | Only Roses displayed | List filtered correctly | ✅ PASS |
 
 ## 3. Conclusion
 The application meets all functional requirements defined in the assessment. No critical bugs were found during the UAT phase.

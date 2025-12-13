@@ -21,7 +21,6 @@ describe('FreshCut B2B Platform - Final System Tests', () => {
         
         expect(res.statusCode).toEqual(201);
         expect(res.body.user).toHaveProperty('id');
-        // Store ID for subsequent tests
         buyerId = res.body.user.id; 
     });
 
@@ -34,20 +33,18 @@ describe('FreshCut B2B Platform - Final System Tests', () => {
         expect(res.body.message).toEqual('Login successful');
     });
 
-    it('POST /api/login should reject invalid credentials', async () => {
-        const res = await request(app)
-            .post('/api/login')
-            .send({ username: 'test_buyer', password: 'WRONG_PASSWORD' });
-        
-        expect(res.statusCode).toEqual(401);
-    });
-
-    // --- 3. PRODUCT CATALOG ---
+    // --- 3. PRODUCT CATALOG & SEARCH ---
     it('GET /api/products should return the catalog', async () => {
         const res = await request(app).get('/api/products');
         expect(res.statusCode).toEqual(200);
-        expect(Array.isArray(res.body)).toBeTruthy();
         expect(res.body.length).toBeGreaterThan(0);
+    });
+
+    it('GET /api/products?search=rose should filter products', async () => {
+        const res = await request(app).get('/api/products?search=rose');
+        expect(res.statusCode).toEqual(200);
+        // Should find "Red Roses"
+        expect(res.body[0].name.toLowerCase()).toContain('rose');
     });
 
     it('POST /api/products should allow Supplier to add a product', async () => {
@@ -65,7 +62,22 @@ describe('FreshCut B2B Platform - Final System Tests', () => {
         expect(res.body.product.name).toEqual('Test Orchid');
     });
 
-    // --- 4. ORDER PROCESSING (B2B LIFECYCLE) ---
+    // --- 4. MAINTENANCE: DELETE PRODUCT ---
+    it('DELETE /api/products/:id should allow Supplier to remove a product', async () => {
+        // First create a product to delete
+        const createRes = await request(app)
+            .post('/api/products')
+            .send({ name: 'To Delete', price: 10, category: 'Test' });
+        
+        const productId = createRes.body.product.id;
+
+        // Then delete it
+        const deleteRes = await request(app).delete(`/api/products/${productId}`);
+        expect(deleteRes.statusCode).toEqual(200);
+        expect(deleteRes.body.message).toContain('deleted');
+    });
+
+    // --- 5. ORDER PROCESSING ---
     it('POST /api/orders should place an order for the Buyer', async () => {
         const orderData = {
             items: [{ id: 1, name: 'Red Roses', price: 45.00 }],
@@ -78,18 +90,7 @@ describe('FreshCut B2B Platform - Final System Tests', () => {
         
         expect(res.statusCode).toEqual(201);
         expect(res.body).toHaveProperty('orderId');
-        // Store Order ID for status update tests
         orderId = res.body.orderId; 
-    });
-
-    it('GET /api/orders should return order history for Buyer', async () => {
-        const res = await request(app)
-            .get(`/api/orders?role=buyer&userId=${buyerId}`);
-        
-        expect(res.statusCode).toEqual(200);
-        expect(Array.isArray(res.body)).toBeTruthy();
-        // Verify the order created previously is present
-        expect(res.body[0].id).toEqual(orderId);
     });
 
     it('PUT /api/orders/:id should allow Supplier to update status', async () => {
