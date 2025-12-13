@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FreshCut - Supplier Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1, h2 { color: #2c3e50; }
+        .section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { padding: 10px; background: #27ae60; color: white; border: none; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        .status-select { padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>👨‍🌾 Supplier Dashboard</h1>
+            <button onclick="logout()" style="background:#e74c3c;">Logout</button>
+        </header>
+
+        <!-- Product Management Section -->
+        <div class="section">
+            <h2>Add New Product</h2>
+            <form id="addProductForm">
+                <input type="text" id="pName" placeholder="Product Name (e.g., Sunflowers)" required>
+                <input type="number" id="pPrice" placeholder="Price ($)" step="0.01" required>
+                <input type="text" id="pCat" placeholder="Category (Flowers, Seeds)" required>
+                <button type="submit">Add to Catalog</button>
+            </form>
+        </div>
+
+        <!-- Order Management Section -->
+        <div class="section">
+            <h2>Incoming Orders</h2>
+            <table id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Buyer</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody><!-- Dynamic Content --></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 1. Authentication Check
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user || user.role !== 'supplier') window.location.href = 'login.html';
+
+        // 2. Add Product Logic
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const product = {
+                name: document.getElementById('pName').value,
+                price: document.getElementById('pPrice').value,
+                category: document.getElementById('pCat').value
+            };
+            
+            try {
+                await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(product)
+                });
+                alert('Product Added Successfully!');
+                document.getElementById('addProductForm').reset();
+            } catch (err) {
+                console.error('Error adding product:', err);
+            }
+        });
+
+        // 3. Load Orders
+        async function loadOrders() {
+            try {
+                const res = await fetch(`/api/orders?role=supplier&userId=${user.id}`);
+                const orders = await res.json();
+                const tbody = document.querySelector('#ordersTable tbody');
+                
+                tbody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td>#${o.id}</td>
+                        <td>${o.username}</td>
+                        <td>${o.items.map(i => i.name).join(', ')}</td>
+                        <td>$${o.total.toFixed(2)}</td>
+                        <td>
+                            <select id="status-${o.id}" class="status-select">
+                                <option value="New" ${o.status === 'New' ? 'selected' : ''}>New</option>
+                                <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            </select>
+                        </td>
+                        <td><button onclick="updateStatus(${o.id})">Update</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading orders:', err);
+            }
+        }
+
+        // 4. Update Order Status
+        async function updateStatus(id) {
+            const newStatus = document.getElementById(`status-${id}`).value;
+            try {
+                await fetch(`/api/orders/${id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ status: newStatus })
+                });
+                alert('Order status updated!');
+            } catch (err) {
+                console.error('Error updating status:', err);
+            }
+        }
+
+        function logout() { 
+            localStorage.removeItem('currentUser'); 
+            window.location.href = 'login.html'; 
+        }
+        
+        // Init
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshCut - Register</title>
+    <title>FreshCut - Login</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         h2 { color: #2c3e50; text-align: center; margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1rem; }
         label { display: block; margin-bottom: 0.5rem; color: #666; }
-        input, select { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 0.75rem; background-color: #27ae60; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #219150; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.75rem; background-color: #3498db; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        .links { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+        .links a { color: #3498db; text-decoration: none; }
         #message { margin-top: 1rem; text-align: center; font-weight: 500; }
         .success { color: #27ae60; }
         .error { color: #e74c3c; }
@@ -20,53 +22,47 @@
 </head>
 <body>
     <div class="card">
-        <h2>🌱 FreshCut Registration</h2>
-        <form id="registerForm">
+        <h2>🔑 FreshCut Login</h2>
+        <form id="loginForm">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" id="username" required placeholder="Choose a username">
+                <input type="text" id="username" required placeholder="Enter username">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="password" required placeholder="Choose a password">
+                <input type="password" id="password" required placeholder="Enter password">
             </div>
-            <div class="form-group">
-                <label>I am a:</label>
-                <select id="role">
-                    <option value="buyer">Business Buyer (Florist)</option>
-                    <option value="supplier">Supplier (Farmer)</option>
-                </select>
-            </div>
-            <button type="submit">Create Account</button>
+            <button type="submit">Sign In</button>
         </form>
         <div id="message"></div>
+        <div class="links">
+            <p>New here? <a href="register.html">Create an account</a></p>
+        </div>
     </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
             const msgDiv = document.getElementById('message');
 
             try {
-                const response = await fetch('/api/register', {
+                const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password, role })
+                    body: JSON.stringify({ username, password })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    // Store user session immediately after registration
+                    msgDiv.textContent = '✅ Login successful! Redirecting...';
+                    msgDiv.className = 'success';
+                    
+                    // Initialize user session
                     localStorage.setItem('currentUser', JSON.stringify(data.user));
 
-                    msgDiv.textContent = '✅ ' + data.message + ' - Redirecting...';
-                    msgDiv.className = 'success';
-                    document.getElementById('registerForm').reset();
-                    
                     // Role-based redirection
                     setTimeout(() => {
                         if (data.user.role === 'supplier') {
@@ -74,8 +70,7 @@
                         } else {
                             window.location.href = 'catalog.html';
                         }
-                    }, 1500);
-
+                    }, 1000);
                 } else {
                     msgDiv.textContent = '❌ ' + data.error;
                     msgDiv.className = 'error';
