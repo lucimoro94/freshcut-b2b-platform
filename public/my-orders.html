@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FreshCut - My Orders</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+        .badge { padding: 5px 10px; border-radius: 12px; font-size: 0.8em; color: white; }
+        .New { background: #3498db; }
+        .Processing { background: #f39c12; }
+        .Completed { background: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 My Orders</h1>
+        <a href="catalog.html">Back to Catalog</a>
+        <br><br>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadMyOrders() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // Redirect if not logged in
+            if (!user) window.location.href = 'login.html';
+
+            try {
+                const res = await fetch(`/api/orders?role=buyer&userId=${user.id}`);
+                const orders = await res.json();
+                
+                document.getElementById('ordersBody').innerHTML = orders.map(o => `
+                    <tr>
+                        <td>#${o.id}</td>
+                        <td>${o.items.map(i => i.name).join(', ')}</td>
+                        <td>$${o.total.toFixed(2)}</td>
+                        <td><span class="badge ${o.status}">${o.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading order history:', err);
+            }
+        }
+        
+        // Init
+        loadMyOrders();
+    </script>
+</body>
+</html>

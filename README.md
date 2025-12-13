@@ -3,10 +3,21 @@
 FreshCut is a digital marketplace connecting farm suppliers (Farmers) with business buyers (Florists). This repository contains the implementation of the core platform features.
 
 ## 🚀 Features Implemented
-1.  **User Registration:** Role-based sign-up (Buyer/Supplier).
-2.  **Product Catalog:** Browse available fresh produce (Flowers, Seeds, Supplies).
-3.  **Shopping Cart:** Client-side cart management.
-4.  **Order Processing:** Secure checkout and order creation.
+
+### User Management
+-   **Role-Based Registration:** Sign up as a Buyer (Florist) or Supplier (Farmer).
+-   **Secure Login:** Authentication system with session management (LocalStorage).
+-   **Smart Redirection:** Suppliers are routed to their Dashboard; Buyers to the Catalog.
+
+### For Buyers (Florists)
+-   **Product Catalog:** Browse available fresh produce with images and prices.
+-   **Shopping Cart:** Real-time client-side cart management.
+-   **Order History:** Track the status of placed orders (New, Processing, Completed).
+
+### For Suppliers (Farmers)
+-   **Supplier Dashboard:** Dedicated interface to manage business.
+-   **Product Management:** Add new products to the global catalog.
+-   **Order Fulfillment:** View incoming orders and update their status.
 
 ## 🛠️ Tech Stack
 -   **Runtime:** Node.js
@@ -33,9 +44,10 @@ FreshCut is a digital marketplace connecting farm suppliers (Farmers) with busin
     npm start
     ```
     The server will start on `http://localhost:3000`.
-    Open your browser and navigate to `http://localhost:3000/register.html` to begin.
+    Open your browser and navigate to `http://localhost:3000/login.html` to begin.
 
 ## ✅ Running Tests
 This project uses a CI/CD pipeline. To run tests locally:
 ```bash
 npm test
+```

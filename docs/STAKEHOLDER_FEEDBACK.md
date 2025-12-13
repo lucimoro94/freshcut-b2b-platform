@@ -1,32 +1,41 @@
-# Stakeholder Feedback & UAT Report
+# Stakeholder Feedback & UAT Reports
 
 ## Overview
 This document tracks feedback received from stakeholders (Farmers, Florists, and System Admins) during the User Acceptance Testing (UAT) phases.
 
 ---
 
-## Feature 1: User Registration
+## Phase 1: Core Features (Registration & Catalog)
 **Tester:** Maria (Florist Representative)
 - **Feedback:** "I need to specify if I am a buyer or a supplier, otherwise the platform is confusing."
 - **Action Taken:** Added a "Role" dropdown selector in the registration form (`Buyer` vs `Supplier`).
 - **Status:** ✅ Implemented.
 
-## Feature 2: Product Catalog
 **Tester:** Giovanni (Farmer/Supplier)
 - **Feedback:** "The list is too plain. I need to see images of the flowers to judge the quality."
 - **Action Taken:** Updated the product card layout to include product images fetched from the backend.
 - **Status:** ✅ Implemented.
 
-## Feature 3: Shopping Cart & Orders
+---
+
+## Phase 2: B2B Logic (Login, Dashboard, Orders)
 **Tester:** System Admin
 - **Feedback:** "Users are able to click 'Checkout' even when the cart is empty, causing server errors."
-- **Action Taken:**
-  1. Disabled the "Checkout" button visually when the cart is empty.
-  2. Added backend validation to reject orders with 0 items (returns 400 Bad Request).
+- **Action Taken:** Disabled the "Checkout" button visually when the cart is empty and added backend validation.
+- **Status:** ✅ Implemented.
+
+**Tester:** Giovanni (Farmer/Supplier)
+- **Feedback:** "I need a way to tell buyers that I have shipped their flowers. Currently, they call me to ask for updates."
+- **Action Taken:** Created a **Supplier Dashboard**. Suppliers can now view incoming orders and update the status from 'New' to 'Processing' to 'Completed'.
+- **Status:** ✅ Implemented.
+
+**Tester:** Maria (Florist Representative)
+- **Feedback:** "After I login, I want to see my past orders to know what I bought last week."
+- **Action Taken:** Implemented **'My Orders'** page for Buyers. It shows the history and the current status of each order.
 - **Status:** ✅ Implemented.
 
 ---
 
 ## Final Sign-Off
 **Date:** 2025-11-23
-**Conclusion:** All critical feedback has been addressed. The platform is ready for the initial B2B pilot launch.
+**Conclusion:** All critical feedback has been addressed. The platform supports the full B2B lifecycle (Order -> Process -> Track).
