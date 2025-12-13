@@ -29,6 +29,7 @@ The project follows **Conventional Commits** (`feat:`, `fix:`, `docs:`, `test:`)
 - **Feature 3:** `feat: implement shopping cart and order processing logic`
 - **Feature 4 (B2B):** `feat: implement full B2B logic with role-based dashboards`
 - **Docs:** `docs: add coding standards, stakeholder feedback and update readme`
+- **Enhancement Sprint:** `feat: implement product search for buyers and delete functionality for suppliers`
 
 ## 4. CI/CD Integration
 Git is tightly integrated with GitHub Actions.
