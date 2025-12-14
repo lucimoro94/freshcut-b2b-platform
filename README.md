@@ -4,6 +4,21 @@
 
 FreshCut is a digital marketplace connecting farm suppliers (Farmers) with business buyers (Florists). This repository contains the implementation of the core platform features, including a full CI/CD pipeline and automated testing.
 
+## 🎓 Assessment Deliverables (Quick Links)
+For the purpose of grading, here are the direct links to the required documentation documents located in the `docs/` folder:
+
+| Category | Deliverable Document | Description |
+| :--- | :--- | :--- |
+| **Testing** | [📄 Testing & UAT Report](docs/TESTING_REPORT.md) | Automated test logs (Jest) and User Acceptance Testing (UAT) scenarios. |
+| **Deployment** | [📄 Deployment Guide](docs/DEPLOYMENT_GUIDE.md) | Steps to deploy on Render.com, environment setup, and CD pipeline details. |
+| **Maintenance** | [📄 Maintenance Plan](docs/MAINTENANCE_PLAN.md) | Monitoring strategy, update procedures, and future roadmap. |
+| **Git & Workflow** | [📄 Git Workflow & History](docs/GIT_WORKFLOW_AND_HISTORY.md) | Analysis of branching strategy, commit history, and collaboration evidence. |
+| **Feedback** | [📄 Stakeholder Feedback](docs/STAKEHOLDER_FEEDBACK.md) | Log of feedback received during development and actions taken. |
+| **Standards** | [📄 Coding Standards](docs/CODING_STANDARDS.md) | Guidelines followed for code style, naming conventions, and security. |
+| **Live App** | [🚀 **Launch Application**](https://freshcut-platform.onrender.com) | Direct link to the production environment. |
+
+---
+
 ## 🎥 Live Demo & Video
 **[Click here to watch the End-to-End Automated Demo (Video)](docs/assets/demo.webm)**
 
