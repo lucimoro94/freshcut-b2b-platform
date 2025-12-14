@@ -64,5 +64,4 @@ Suppliers have a dedicated dashboard to add products, remove items, and update o
 This project uses a CI/CD pipeline. To run tests locally:
 ```bash
 npm test             # Run Jest Unit/Integration Tests
-npx playwright test  # Run E2E Video Demo
 ```
