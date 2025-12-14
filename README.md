@@ -38,7 +38,7 @@ Suppliers have a dedicated dashboard to add products, remove items, and update o
 -   **Runtime:** Node.js
 -   **Framework:** Express.js
 -   **Frontend:** HTML5, CSS, Vanilla JS
--   **Testing:** Jest (Unit/Integration), Playwright (E2E)
+-   **Testing:** Jest (Unit/Integration)
 -   **CI/CD:** GitHub Actions, Render.com
 
 ## 📦 Installation & Setup
